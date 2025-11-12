@@ -2,6 +2,7 @@
 include_once("../config.inc.php");
 include_once("../funciones/sesiones.php");
 include_once("../funciones/acceso_bd.php");
+include_once("../funciones/crear.php");
 //Página solo accesible para administradores
 validarSesion();
 validarAdmin();
@@ -18,12 +19,13 @@ validarAdmin();
     <nav>
         <a href="gestionar_habitaciones.php">Volver a gestión</a>
         <a href="../index.php">Inicio</a>
-        <a href="../funciones/logout.php">Cerrar Sesión</a>
+        <a href="../funciones/logout.php" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?');">Cerrar Sesión</a>
     </nav>
     
     <hr>
     <main>
-        <form action="../funciones/crear_habitacion.php" method="POST" enctype="multipart/form-data">
+        <form name="frm_agregar" action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data">
+            <p align="center" class="estado"><?php echo agregarHabitacion(); ?></p>
             <table>
                 <tr>
                     <td><label for="numero">Número de habitación:</label></td>
@@ -32,12 +34,12 @@ validarAdmin();
                 <tr>
                     <td><label for="categoria">Categoría:</label></td>
                     <td>
-                        <select id="categoria" name="txt_categoria" required>
+                        <select id="categoria" name="slct_categoria" required>
                             <option value="">-- Seleccionar uno --</option>
-                            <option value="sencilla">Sencilla</option>
-                            <option value="doble">Doble</option>
-                            <option value="suite">Suite</option>
-                            <option value="ejecutiva">Ejecutiva</option>
+                            <option value="Sencilla">Sencilla</option>
+                            <option value="Doble">Doble</option>
+                            <option value="Suite">Suite</option>
+                            <option value="Ejecutiva">Ejecutiva</option>
                         </select>
                     </td>
                 </tr>
@@ -50,8 +52,11 @@ validarAdmin();
                     <td><input type="number" id="capacidad" name="txt_capacidad" min="1" required></td>
                 </tr>
                 <tr>
-                    <td><label for="disponibles">Habitaciones disponibles:</label></td>
-                    <td><input type="number" id="disponibles" name="txt_disponibles" min="0" required></td>
+                    <td><label for="disponible">Estado:</label></td>
+                    <td>
+                        <input type="checkbox" id="disponible" name="chk_disponible" value="1" checked>
+                        <label for="disponible">Disponible</label>
+                    </td>
                 </tr>
                 <tr>
                     <td><label for="descripcion">Descripción:</label></td>
@@ -65,7 +70,6 @@ validarAdmin();
                     <td colspan="2">
                         <hr>
                         <input type="submit" name="btn_agregar" value="Agregar Habitación">
-                        <input type="button" value="Cancelar" onclick="window.location.href='gestionar_habitaciones.php'">
                     </td>
                 </tr>
             </table>

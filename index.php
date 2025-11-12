@@ -1,7 +1,7 @@
 <?php
 include_once("config.inc.php");
 include_once("funciones/sesiones.php");
-include_once("funciones/listar_habitaciones.php");
+include_once("funciones/listar.php");
 //No se valida sesión en index.php ya que es una de las páginas accesibles sin iniciar sesión
 session_start();
 $sesion_activa = isset($_SESSION['cidusuario']);
@@ -43,7 +43,7 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
             </div>
         <?php endif; ?>
 
-        <h3>Habitaciones Disponibles</h3>
+        <h3>Habitaciones</h3>
         <!-- Las habitaciones se generarán dinámicamente desde la base de datos -->
         <!-- Diseño en tabla temporal para debbugging -->
         <table border="1" cellpadding="10">
@@ -57,7 +57,7 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
                 <th width="10">&nbsp;</th>
                 <th>Capacidad</th>
                 <th width="10">&nbsp;</th>
-                <th>Disponibles</th>
+                <th>Estado</th>
                 <th width="10">&nbsp;</th>
                 <th>Imágen</th>
                 <th width="10">&nbsp;</th>

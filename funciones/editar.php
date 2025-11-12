@@ -1,0 +1,64 @@
+<?php
+include_once("../config.inc.php");
+include_once("../funciones/sesiones.php");
+include_once("../funciones/acceso_bd.php");
+
+//Escuchar el envío del formulario de edición
+if (isset($_POST["btn_editar"]) && $_POST["btn_editar"] == "Guardar Cambios"){
+    
+    $pconexion = abrirConexion();
+    seleccionarBaseDatos($pconexion);
+
+    $cid_habitacion = $_POST["hdn_id"];
+    $cnumero = $_POST["txt_numero"];
+    $ccategoria = $_POST["txt_categoria"];
+    $nprecio = $_POST["txt_precio"];
+    $ncapacidad = $_POST["txt_capacidad"];
+    $ndisponible = isset($_POST["chk_disponible"]) ? 1 : 0;
+    $cdescripcion = $_POST["txt_descripcion"];
+
+    // Verificar si se subió una nueva imagen
+    if(is_uploaded_file($_FILES["fl_imagen"]["tmp_name"])) {
+        $cnombre_imagen = $_FILES["fl_imagen"]["name"];
+        
+        // Mover la imagen a la carpeta de destino
+        $carpeta_destino = "../imagenes/habitaciones/";
+        $extension = pathinfo($cnombre_imagen, PATHINFO_EXTENSION);
+        $cnombre_imagen = "hab_" . $cnumero . "_" . time() . "." . $extension;
+        move_uploaded_file($_FILES["fl_imagen"]["tmp_name"], $carpeta_destino . $cnombre_imagen);
+
+        $cquery = "UPDATE habitaciones";
+        $cquery .= " SET numero = '$cnumero',";
+        $cquery .= " categoria = '$ccategoria',";
+        $cquery .= " precio = $nprecio,";
+        $cquery .= " capacidad = $ncapacidad,";
+        $cquery .= " disponible = $ndisponible,";
+        $cquery .= " descripcion = '$cdescripcion',";
+        $cquery .= " imagen = '$cnombre_imagen'";
+        $cquery .= " WHERE id_habitacion = $cid_habitacion";
+    }
+    else{
+        // No se subió imagen nueva
+        $cquery = "UPDATE habitaciones";
+        $cquery .= " SET numero = '$cnumero',";
+        $cquery .= " categoria = '$ccategoria',";
+        $cquery .= " precio = $nprecio,";
+        $cquery .= " capacidad = $ncapacidad,";
+        $cquery .= " disponible = $ndisponible,";
+        $cquery .= " descripcion = '$cdescripcion'";
+        $cquery .= " WHERE id_habitacion = $cid_habitacion";
+    }
+
+    if (editarDatos($pconexion, $cquery)) {
+        $curl = "Location:".$GLOBALS["raiz_sitio"]."admin/gestionar_habitaciones.php";
+    }
+    else{
+        $curl = "Location:".$GLOBALS["raiz_sitio"]."admin/editar_habitacion.php?id=$cid_habitacion";
+    }
+
+    cerrarConexion($pconexion);
+    header($curl);
+    exit();
+
+}
+

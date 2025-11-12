@@ -1,3 +1,7 @@
 p.error{
     color: red;
 }
+#eliminar_icono, #editar_icono {
+    width: 35px;
+    height: auto;
+}
