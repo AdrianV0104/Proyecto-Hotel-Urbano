@@ -1,6 +1,7 @@
 <?php
 include_once("acceso_bd.php");
-function listarHabitaciones(){
+//Listado general de habitaciones(en desuso, se está usando listarPorCategoria en index.php)
+/*function listarHabitaciones(){
 
     $ccontenido="";
     //Conexión con el servidor de base de datos
@@ -60,6 +61,95 @@ function listarHabitaciones(){
     // Liberar resultado
     mysqli_free_result($lresult);
     // Cerrar conexión
+    cerrarConexion($pconexion);
+
+    return $ccontenido;
+}
+*/
+//Listado de habitaciones por categoría
+function listarPorCategoria() {
+
+    $ccontenido = "";
+
+    $pconexion = abrirConexion();
+    seleccionarBaseDatos($pconexion);
+
+    //Primero obtener todas las categorías con un orden específico
+    $cquery_categoria = "SELECT DISTINCT categoria FROM habitaciones ORDER BY CASE categoria ";
+    $cquery_categoria .= "WHEN 'Sencilla' THEN 1 ";
+    $cquery_categoria .= "WHEN 'Doble' THEN 2 ";
+    $cquery_categoria .= "WHEN 'Suite' THEN 3 ";
+    $cquery_categoria .= "WHEN 'Ejecutiva' THEN 4 ";
+    $cquery_categoria .= "ELSE 5 END";
+    
+    $cresultado_categorias = mysqli_query($pconexion, $cquery_categoria);
+
+    if(!$cresultado_categorias) {
+        $cerror = "No fue posible recuperar las categorías. <br>";
+        $cerror .= "Descripci&oacute;n: ".mysqli_error($pconexion);
+        die($cerror);
+    }
+
+    //Para cada categoría, obtener las habitaciones correspondientes
+    while ($ccategoria = mysqli_fetch_array($cresultado_categorias, MYSQLI_ASSOC)) {
+        $cnombre_categoria = mysqli_real_escape_string($pconexion, $ccategoria['categoria']);
+
+        //Header de la categoria
+        $ccontenido .= "<tr class='header-categoria'>";
+        $ccontenido .= "<td colspan='15'><h3>Habitaciones ".$cnombre_categoria."</h3></td></tr>";
+
+        //Obtener las habitaciones pertenecientes a la categoría
+        $cquery = "SELECT id_habitacion, numero, precio, capacidad, disponible, descripcion, imagen";
+        $cquery .= " FROM habitaciones WHERE disponible = 1 AND categoria = '$cnombre_categoria' ORDER BY numero ASC";
+
+        $lresultado = mysqli_query($pconexion, $cquery);
+        if(!$lresultado) {
+            $cerror  = "No fue posible recuperar las habitaciones. <br>";
+            $cerror .= "Descripci&oacute;n: ".mysqli_error($pconexion);
+            die($cerror);
+        }
+
+        //Listar habitaciones de la categoria
+        if(mysqli_num_rows($lresultado) > 0) {
+            while ($adatos = mysqli_fetch_array($lresultado, MYSQLI_ASSOC)) {
+                $cid_habitacion = $adatos['id_habitacion'];
+                $cestado = ($adatos['disponible'] == 1) ? 'Disponible' : 'Ocupado';
+
+                $ccontenido .= "<tr>";
+                $ccontenido .= "<td align='center'>".$adatos['numero']."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td>".$cnombre_categoria."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td>\$".number_format($adatos['precio'], 2)."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td align='center'>".$adatos['capacidad']."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td align='center'>".$cestado."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td><img src='imagenes/habitaciones/".$adatos["imagen"]."' alt=\"Imagen de la habitación\" width=\"100\"></td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+                $ccontenido .= "<td>".$adatos['descripcion']."</td>";
+                $ccontenido .= "<td width='10'>&nbsp;</td>";
+
+                if (isset($_SESSION['cidusuario'])) {
+                    $ccontenido .= "<td><a href='reservar_habitacion.php?id_habitacion=".$cid_habitacion."'>";
+                    $ccontenido .= "<button>Reservar</button></a></td>";
+                }
+
+                $ccontenido .= "</tr>";
+            }
+        }
+        else {
+            $ccontenido .= "<tr><td colspan='15' align='center'>No hay habitaciones registradas en esta categoría.</td></tr>";
+        }
+
+        mysqli_free_result($lresultado);
+
+        //Espacio entre categorias
+        $ccontenido .= "<tr><td colspan='15'>&nbsp;</td></tr>";
+    }
+
+    mysqli_free_result($cresultado_categorias);
     cerrarConexion($pconexion);
 
     return $ccontenido;

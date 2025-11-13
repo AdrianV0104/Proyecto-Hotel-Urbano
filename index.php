@@ -59,7 +59,7 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
                 <th width="10">&nbsp;</th>
                 <th>Estado</th>
                 <th width="10">&nbsp;</th>
-                <th>Imágen</th>
+                <th>Imagen</th>
                 <th width="10">&nbsp;</th>
                 <th>Descripción</th>
                 <?php if ($sesion_activa): ?>
@@ -69,7 +69,7 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
             </tr>
         </thead>
         <tbody>
-            <?php echo listarHabitaciones(); ?>
+            <?php echo listarPorCategoria(); ?>
         </tbody>
     </table>
     </main>

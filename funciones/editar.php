@@ -19,6 +19,18 @@ if (isset($_POST["btn_editar"]) && $_POST["btn_editar"] == "Guardar Cambios"){
 
     // Verificar si se subió una nueva imagen
     if(is_uploaded_file($_FILES["fl_imagen"]["tmp_name"])) {
+        // Obtener la imagen antigua para eliminarla
+        $cquery_img = "SELECT imagen FROM habitaciones WHERE id_habitacion = $cid_habitacion";
+        $adatos_img = extraerRegistro($pconexion, $cquery_img);
+    
+        // Eliminar la imagen antigua del servidor
+        if (!empty($adatos_img['imagen']) && $adatos_img['imagen'] != 'sin imagen asociada') {
+            $ruta_antigua = "../imagenes/habitaciones/" . $adatos_img['imagen'];
+            if (file_exists($ruta_antigua)) {
+                unlink($ruta_antigua);
+            }
+        }
+        // Procesar la nueva imagen
         $cnombre_imagen = $_FILES["fl_imagen"]["name"];
         
         // Mover la imagen a la carpeta de destino
@@ -55,7 +67,7 @@ if (isset($_POST["btn_editar"]) && $_POST["btn_editar"] == "Guardar Cambios"){
     else{
         $curl = "Location:".$GLOBALS["raiz_sitio"]."admin/editar_habitacion.php?id=$cid_habitacion";
     }
-
+    //Seria bueno mover
     cerrarConexion($pconexion);
     header($curl);
     exit();
