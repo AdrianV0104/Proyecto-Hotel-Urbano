@@ -1,8 +1,8 @@
 <?php
-include_once("config.inc.php"); // Asegúrate que este archivo define $servidor, $usuario, etc.
+include_once("config.inc.php");
 session_start();
 
-// Validar sesión, si no hay usuario, mandar al login
+//Validar sesión, si no hay usuario, mandar al login
 if (!isset($_SESSION['cidusuario'])) {
     header("Location: login.php");
     exit();
@@ -70,7 +70,7 @@ if (!isset($_SESSION['cidusuario'])) {
     </main>
 
     <script>
-        // Validación simple de fechas en el cliente
+        //Validación simple de fechas en el cliente
         document.getElementById('checkin').addEventListener('change', function() {
             document.getElementById('checkout').min = this.value;
         });

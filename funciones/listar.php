@@ -132,8 +132,10 @@ function listarPorCategoria() {
                 $ccontenido .= "<td width='10'>&nbsp;</td>";
 
                 if (isset($_SESSION['cidusuario'])) {
-                    $ccontenido .= "<td><a href='reservar_habitacion.php?id_habitacion=".$cid_habitacion."'>";
-                    $ccontenido .= "<button>Reservar</button></a></td>";
+                    $ccontenido .= "<td><button type='button' class='btn-reservar' ";
+                    $ccontenido .= "onclick=\"Carrito.agregar(".$adatos['id_habitacion'].", '".$adatos['numero']."', ".$adatos['precio'].", '".$cnombre_categoria."')\">";
+                    $ccontenido .= "Agregar al Carrito";
+                    $ccontenido .= "</button></td>";
                 }
 
                 $ccontenido .= "</tr>";
