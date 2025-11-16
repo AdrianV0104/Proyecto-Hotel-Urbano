@@ -58,26 +58,36 @@ const Carrito = {
         this.renderizarTabla();
     },
 
+    //Calcula días y total estancia
     renderizarTabla: function() {
         const tbody = document.getElementById('tabla-carrito');
-        const totalSpan = document.getElementById('total-carrito');
+        if (!tbody) return;
+
+        //Referencias a los elementos del DOM
+        const totalNocheSpan = document.getElementById('total-noche');
+        const diasEstanciaSpan = document.getElementById('dias-estancia');
+        const totalEstanciaSpan = document.getElementById('total-estancia');
         const inputData = document.getElementById('datos_reserva_input');
-        if (!tbody) return; 
+        const checkinInput = document.getElementById('checkin');
+        const checkoutInput = document.getElementById('checkout');
 
         let carrito = this.obtener();
         let html = '';
-        let total = 0;
+        let totalPorNoche = 0;
 
         if (carrito.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" align="center">Carrito vacío</td></tr>';
-            totalSpan.innerText = '0.00';
+            totalNocheSpan.innerText = '0.00';
+            diasEstanciaSpan.innerText = '0';
+            totalEstanciaSpan.innerText = '0.00';
             if(inputData) inputData.value = '';
             return;
         }
 
+        //Renderizar filas de la tabla
         carrito.forEach(item => {
             let subtotal = item.precio * item.cantidad;
-            total += subtotal;
+            totalPorNoche += subtotal;
             html += `
                 <tr>
                     <td>${item.numero} (${item.categoria})</td>
@@ -93,12 +103,58 @@ const Carrito = {
             `;
         });
         tbody.innerHTML = html;
-        totalSpan.innerText = total.toFixed(2);
+
+        //Calcular días de estancia
+        let dias = 0;
+        if (checkinInput.value && checkoutInput.value) {
+            try {
+                const date1 = new Date(checkinInput.value + 'T00:00:00Z');
+                const date2 = new Date(checkoutInput.value + 'T00:00:00Z');
+                
+                if (date2 > date1) {
+                    const diffTime = date2.getTime() - date1.getTime();
+                    dias = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Milisegundos en un día
+                }
+            } catch(e) {
+                console.error("Error al calcular fechas:", e);
+                dias = 0;
+            }
+        }
+
+        //Calcular total estancia
+        let totalEstancia = totalPorNoche * dias;
+
+        //Actualizar totales en el DOM
+        totalNocheSpan.innerText = totalPorNoche.toFixed(2);
+        diasEstanciaSpan.innerText = dias;
+        totalEstanciaSpan.innerText = totalEstancia.toFixed(2);
+        
+        //Actualizar input oculto
         if(inputData) inputData.value = JSON.stringify(carrito);
     }
 };
 
-//Inicializar tabla si estamos en carrito.php
+//Inicializar y añadir listeners de fechas
 document.addEventListener('DOMContentLoaded', () => {
-    if(document.getElementById('tabla-carrito')) Carrito.renderizarTabla();
+    if(document.getElementById('tabla-carrito')) {
+        const checkin = document.getElementById('checkin');
+        const checkout = document.getElementById('checkout');
+
+        // Validarfecha mínima de checkout al cambiar checkin
+        checkin.addEventListener('change', function() {
+            if (checkin.value) {
+                //Calcular el día siguiente
+                const nextDay = new Date(checkin.value);
+                nextDay.setDate(nextDay.getDate() + 2);
+                checkout.min = nextDay.toISOString().split('T')[0];
+            }
+            Carrito.renderizarTabla(); //Recalcular al cambiar fecha
+        });
+
+        //Recalcular al cambiar fecha de checkout
+        checkout.addEventListener('change', Carrito.renderizarTabla);
+
+        //Renderizar tabla inicial
+        Carrito.renderizarTabla();
+    }
 });

@@ -1,12 +1,6 @@
 <?php
 include_once("config.inc.php");
 session_start();
-
-//Validar sesión, si no hay usuario, mandar al login
-if (!isset($_SESSION['cidusuario'])) {
-    header("Location: login.php");
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -15,7 +9,7 @@ if (!isset($_SESSION['cidusuario'])) {
     <title>Mi Carrito de Reservas</title>
     <link rel="stylesheet" href="css/estilos.css">
     <style>
-        /* Estilos simples para la tabla del carrito */
+        /* Estilos temporales para la tabla del carrito */
         .contenedor-carrito { width: 80%; margin: 20px auto; }
         table.carrito { width: 100%; border-collapse: collapse; }
         table.carrito th, table.carrito td { border: 1px solid #ddd; padding: 8px; text-align: left; }
@@ -38,16 +32,27 @@ if (!isset($_SESSION['cidusuario'])) {
                     <th>Habitación</th>
                     <th>Precio Unitario</th>
                     <th>Cantidad</th>
-                    <th>Subtotal</th>
+                    <th>Subtotal (por noche)</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody id="tabla-carrito">
                 </tbody>
+            
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="3" style="text-align:right">TOTAL:</td>
-                    <td>$<span id="total-carrito">0.00</span></td>
+                    <td colspan="3" style="text-align:right"><strong>Total por Noche:</strong></td>
+                    <td><strong>$<span id="total-noche">0.00</span></strong></td>
+                    <td></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" style="text-align:right">Días de Estancia:</td>
+                    <td><span id="dias-estancia">0</span></td>
+                    <td></td>
+                </tr>
+                <tr class="total-row" style="font-size: 1.2em; border-top: 2px solid #333;">
+                    <td colspan="3" style="text-align:right"><strong>TOTAL ESTANCIA:</strong></td>
+                    <td><strong>$<span id="total-estancia">0.00</span></strong></td>
                     <td></td>
                 </tr>
             </tfoot>
@@ -69,12 +74,6 @@ if (!isset($_SESSION['cidusuario'])) {
         </form>
     </main>
 
-    <script>
-        //Validación simple de fechas en el cliente
-        document.getElementById('checkin').addEventListener('change', function() {
-            document.getElementById('checkout').min = this.value;
-        });
-    </script>
-</body>
+    </body>
 <script src="js/carrito.js"></script>
 </html>

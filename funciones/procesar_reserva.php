@@ -23,6 +23,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($carrito)) {
         die("Error: El carrito está vacío.");
     }
+    
+    // --- NUEVO: Calcular días de estancia (noches) ---
+    try {
+        $date_checkin = new DateTime($checkin);
+        $date_checkout = new DateTime($checkout);
+        
+        if ($date_checkout <= $date_checkin) {
+             throw new Exception("La fecha de Check-out debe ser posterior a la de Check-in.");
+        }
+        
+        $intervalo = $date_checkin->diff($date_checkout);
+        $dias_estancia = $intervalo->days;
+        
+        if ($dias_estancia <= 0) {
+            throw new Exception("La estancia debe ser de al menos 1 noche.");
+        }
+
+    } catch (Exception $e) {
+        die("Error en las fechas: " . $e->getMessage());
+    }
+    // --- Fin cálculo de días ---
+
 
     //Abrir conexión usando tu función
     $conn = abrirConexion();
@@ -32,11 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         //Iniciar Transacción
         $conn->begin_transaction();
 
-        //Calcular total total de la reserva
-        $total_reserva = 0;
+        // --- MODIFICADO: Calcular total en base a los días de estancia ---
+        $total_por_noche = 0;
         foreach ($carrito as $item) {
-            $total_reserva += ($item['precio'] * $item['cantidad']);
+            $total_por_noche += ($item['precio'] * $item['cantidad']);
         }
+        $total_reserva = $total_por_noche * $dias_estancia;
+        // --- Fin cálculo total ---
 
         //Insertar en tabla 'reservaciones'
         $sql_reserva = "INSERT INTO reservaciones (id_usuario, fecha_checkin, fecha_checkout, total, estado) 
@@ -64,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($carrito as $item) {
             $id_hab = $item['id'];
             $cantidad = $item['cantidad'];
-            $precio = $item['precio'];
+            $precio = $item['precio']; // Este sigue siendo el precio unitario por noche
 
             // a) Insertar detalle
             $stmt_detalle->bind_param("iiid", $id_reserva, $id_hab, $cantidad, $precio);
@@ -73,29 +97,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // b) Descontar disponibilidad
+            // NOTA: Esto descuenta la habitación para todo el rango de fechas.
+            // Una implementación más avanzada requeriría verificar la disponibilidad
+            // por día, pero para este proyecto, descontar el "stock" general funciona.
             $stmt_update->bind_param("iii", $cantidad, $id_hab, $cantidad);
             $stmt_update->execute();
 
             if ($stmt_update->affected_rows === 0) {
-                throw new Exception("No hay suficiente stock para la habitación: " . $item['numero']); // O nombre/categoría
+                // Si (disponibles < cantidad), la transacción falla.
+                throw new Exception("No hay suficiente disponibilidad para la habitación: " . $item['numero']);
             }
         }
 
         $conn->commit();
         
-        //Limpiamos la cookie del carrito
+        //Limpiamos la cookie del carrito (Nombre debe coincidir con JS)
         setcookie('carrito_urbano', '', time() - 3600, '/');
 
-        //Éxito
+        // --- MODIFICADO: Mensaje de éxito con detalles ---
         echo "<h1>¡Reserva Exitosa!</h1>";
-        echo "<p>Tu reserva ha sido procesada. Total pagado: $$total_reserva</p>";
+        echo "<p>Tu reserva ha sido procesada.</p>";
+        echo "<ul>";
+        echo "<li>Check-in: $checkin</li>";
+        echo "<li>Check-out: $checkout</li>";
+        echo "<li>Noches de estancia: $dias_estancia</li>";
+        echo "<li>Total por noche: $$total_por_noche</li>";
+        echo "<li><strong>Total pagado: $$total_reserva</strong></li>";
+        echo "</ul>";
         echo "<a href='../index.php'>Volver al inicio</a>";
 
     } catch (Exception $e) {
         //Si algo falla, deshacemos todo
         $conn->rollback();
         echo "<h1>Error en la reserva</h1>";
-        echo "<p>" . $e->getMessage() . "</p>";
+        echo "<p>Se ha producido un error y tu reserva no pudo ser completada. No se ha realizado ningún cargo.</p>";
+        echo "<p><strong>Detalle:</strong> " . $e->getMessage() . "</p>";
         echo "<a href='../carrito.php'>Volver al carrito</a>";
     }
 

@@ -130,19 +130,16 @@ function listarPorCategoria() {
                 $ccontenido .= "<td width='10'>&nbsp;</td>";
                 $ccontenido .= "<td>".$adatos['descripcion']."</td>";
                 $ccontenido .= "<td width='10'>&nbsp;</td>";
-
-                if (isset($_SESSION['cidusuario'])) {
-                    $ccontenido .= "<td><button type='button' class='btn-reservar' ";
-                    $ccontenido .= "onclick=\"Carrito.agregar(".$adatos['id_habitacion'].", '".$adatos['numero']."', ".$adatos['precio'].", '".$cnombre_categoria."')\">";
-                    $ccontenido .= "Agregar al Carrito";
-                    $ccontenido .= "</button></td>";
-                }
+                $ccontenido .= "<td><button type='button' class='btn-reservar' ";
+                $ccontenido .= "onclick=\"Carrito.agregar(".$adatos['id_habitacion'].", '".$adatos['numero']."', ".$adatos['precio'].", '".$cnombre_categoria."')\">";
+                $ccontenido .= "Agregar al Carrito";
+                $ccontenido .= "</button></td>";
 
                 $ccontenido .= "</tr>";
             }
         }
         else {
-            $ccontenido .= "<tr><td colspan='15' align='center'>No hay habitaciones registradas en esta categoría.</td></tr>";
+            $ccontenido .= "<tr><td colspan='15' align='center'>No hay habitaciones disponibles en esta categoría.</td></tr>";
         }
 
         mysqli_free_result($lresultado);
@@ -181,7 +178,7 @@ function listarHabitacionesAdmin(){
         if(mysqli_num_rows($lresult) > 0){
             while ($adatos = mysqli_fetch_array($lresult, MYSQLI_ASSOC)){
                 $cid_habitacion = $adatos["id_habitacion"];
-                $cestado = ($adatos["disponible"] == 1) ? "Disponible" : "Ocupada";
+                $cestado = ($adatos["disponibles"] > 0) ? "Disponible" : "Ocupada";
                 $ccontenido .= "<tr>";
                 $ccontenido .= "<td align=\"center\">".$adatos["numero"]."</td>";
                 $ccontenido .= "<td width=\"10\">&nbsp;</td>";
