@@ -22,11 +22,10 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
 
     <nav>
         <a href="index.php">Inicio</a>
-        <!-- Mostrar enlaces de admin solo si la sesión está activa y el usuario es admin -->
+        <a href="carrito.php">Mi Carrito</a>
         <?php if ($sesion_activa && $tipo_usuario == 'admin'): ?>
             <a href="admin/gestionar_habitaciones.php">Gestionar Habitaciones</a>
         <?php endif; ?>
-        <!-- Alternar entre cierre de sesión y acceso a login/registro dependiendo de estado de sesión -->
         <?php if ($sesion_activa): ?>
             <a href="funciones/logout.php" onclick="return confirm('¿Estás seguro de que deseas cerrar sesión?');">Cerrar Sesión</a>
         <?php else: ?>
@@ -36,7 +35,6 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
         
     <main>
         <h2>Hola, <?php echo htmlspecialchars($nombre_usuario); ?>!</h2>
-        <!-- Alertar a visitantes de funciones restringidas -->
         <?php if (!$sesion_activa): ?>
             <div class="alerta-info">
                 <p>Estás navegando como <b>visitante</b>. <a href="login.php">Inicia sesión</a> para poder hacer reservaciones.</p>
@@ -55,8 +53,6 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
         <hr>
 
         <h3>Habitaciones</h3>
-        <!-- Las habitaciones se generarán dinámicamente desde la base de datos -->
-        <!-- Diseño en tabla temporal para debbugging -->
         <table border="1" cellpadding="10">
         <thead>
             <tr>
@@ -73,10 +69,8 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
                 <th>Imagen</th>
                 <th width="10">&nbsp;</th>
                 <th>Descripción</th>
-                <?php if ($sesion_activa): ?>
-                    <th width="10">&nbsp;</th>
-                    <th>Acción</th>
-                <?php endif; ?>
+                <th width="10">&nbsp;</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
@@ -85,4 +79,5 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
     </table>
     </main>
 </body>
+<script src="js/carrito.js"></script>
 </html>
