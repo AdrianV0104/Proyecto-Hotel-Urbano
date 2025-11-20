@@ -29,7 +29,7 @@ $adatos = recuperarInfoHabitacion($_GET['id_habitacion']);
     <main>
         <h2>Editar habitaciones código: <?php echo $adatos['codigo']; ?></h2>
 
-        <form action="editar_habitacion.php" method="POST" enctype="multipart/form-data">
+        <form action="editar_habitacion.php" method="POST" enctype="multipart/form-data" onsubmit="return validarFormularioEditar();">
         <!-- Campo oculto con el ID -->
             <input type="hidden" name="hdn_id" value="<?php echo $adatos['id_habitacion']; ?>">
             
@@ -87,10 +87,12 @@ $adatos = recuperarInfoHabitacion($_GET['id_habitacion']);
                     <td colspan="2">
                         <hr>
                         <input type="submit" name="btn_editar" value="Guardar Cambios">
+                        <input type="button" name="btn_cancelar" value="Cancelar" onclick="window.location.href='gestionar_habitaciones.php';">
                     </td>
                 </tr>
             </table>
         </form>
     </main>
 </body>
+<script src="../js/validaciones.js"></script>
 </html>

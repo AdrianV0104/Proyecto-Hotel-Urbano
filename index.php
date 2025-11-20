@@ -21,9 +21,9 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
 </head>
 <body>
     <header>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div class="header-container">
             <h1>Hotel Urbano</h1>
-             </div>
+        </div>
     </header>
 
     <nav>
@@ -68,6 +68,8 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
 
     </main>
 </body>
+<script src="js/modal.js"></script>
+<script src="js/validaciones.js"></script>
 <script src="js/carrito.js"></script>
 <script src="js/carrusel.js"></script>
 </html>

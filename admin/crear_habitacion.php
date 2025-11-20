@@ -27,7 +27,7 @@ validarAdmin();
     
     <hr>
     <main>
-        <form name="frm_agregar" action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data">
+        <form name="frm_agregar" action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="POST" enctype="multipart/form-data" onsubmit="return validarFormularioCrear();">
             <p align="center" class="estado"><?php echo agregarHabitacion(); ?></p>
             <table>
                 <tr>
@@ -72,10 +72,12 @@ validarAdmin();
                     <td colspan="2">
                         <hr>
                         <input type="submit" name="btn_agregar" value="Agregar Habitación">
+                        <input type="button" name="btn_cancelar" value="Cancelar" onclick="window.location.href='gestionar_habitaciones.php';">
                     </td>
                 </tr>
             </table>
         </form>
     </main>
 </body>
+<script src="../js/validaciones.js"></script>
 </html>

@@ -71,6 +71,7 @@ include_once("config.inc.php");
             
             <br><br>
             <button type="submit" style="padding:10px 20px; font-size:16px; cursor:pointer;">Confirmar y Pagar</button>
+            <input type="button" name="btn_cancelar" value="Cancelar" onclick="window.location.href='admin/gestionar_habitaciones.php';">
         </form>
     </main>
 

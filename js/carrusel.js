@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
+/*
 // Función para desplegar la descripción
 function toggleDetalles(id) {
     const desc = document.getElementById('desc-' + id);
@@ -66,4 +66,4 @@ function toggleDetalles(id) {
             desc.classList.add('activo');
         }
     }
-}
+}*/

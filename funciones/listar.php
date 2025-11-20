@@ -107,11 +107,11 @@ function listarPorCategoria() {
         if(mysqli_num_rows($lresultado) > 0) {
             // Contenedor de categoría
             $ccontenido .= '<section class="categoria-section">';
-            $ccontenido .= '    <h3 class="categoria-titulo">' . htmlspecialchars($cnombre_categoria) . 's</h3>';
-            $ccontenido .= '    <div class="carrusel-wrapper">';
-            $ccontenido .= '        <button class="carrusel-btn btn-prev">&#10094;</button>';
-            $ccontenido .= '        <div class="carrusel-track-container">';
-            $ccontenido .= '            <div class="carrusel-track">';
+            $ccontenido .= '<h3 class="categoria-titulo">' . htmlspecialchars($cnombre_categoria) . 's</h3>';
+            $ccontenido .= '<div class="carrusel-wrapper">';
+            $ccontenido .= '<button class="carrusel-btn btn-prev">&#10094;</button>';
+            $ccontenido .= '<div class="carrusel-track-container">';
+            $ccontenido .= '<div class="carrusel-track">';
 
             // Renderizar tarjetas
             while ($adatos = mysqli_fetch_array($lresultado, MYSQLI_ASSOC)) {
@@ -148,7 +148,7 @@ function listarPorCategoria() {
                 // Botones
                 $ccontenido .= '<div class="card-actions">';
                 // Botón Ver Detalles
-                $ccontenido .= '<button type="button" class="btn-detalles" onclick="toggleDetalles(' . $id . ')">';
+                $ccontenido .= '<button type="button" class="btn-detalles" onclick="abrirModalDetalles(' . $id . ', \'' . htmlspecialchars($codigo) . '\', \'' . htmlspecialchars($cnombre_categoria) . '\', ' . $precio . ', ' . $capacidad . ', \'' . $descripcion . '\', \'' . htmlspecialchars($ruta_imagen) . '\')">';
                 $ccontenido .= 'Ver Detalles';
                 $ccontenido .= '</button>';
                 // Botón Agregar al Carrito
@@ -218,7 +218,7 @@ function listarHabitacionesAdmin(){
                 $ccontenido .= "<td width=\"10\">&nbsp;</td>";
                 $ccontenido .= "<td><a href=\"../admin/editar_habitacion.php?id_habitacion=$cid_habitacion\">";
                 $ccontenido .= "<img src=\"../imagenes/editar.svg\" id=\"editar_icono\" border=\"0\" alt=\"Editar\"></a>";
-                $ccontenido .= "<a href=\"../funciones/eliminar.php?id_habitacion=$cid_habitacion\">";
+                $ccontenido .= "<a href=\"../funciones/eliminar.php?id_habitacion=$cid_habitacion\" onclick=\"return confirm('¿Estás seguro de que deseas eliminar esta habitación? Esta acción no se puede deshacer.');\">";
                 $ccontenido .= "<img src=\"../imagenes/borrar.svg\" id=\"eliminar_icono\" border=\"0\" alt=\"Eliminar\"></a></td>";
                 $ccontenido .= "</tr>";
             }
