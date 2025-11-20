@@ -120,6 +120,7 @@ function listarPorCategoria() {
                 $precio = number_format($adatos['precio'], 2);
                 $capacidad = $adatos['capacidad'];
                 $descripcion = $adatos['descripcion'];
+                $disponibles = $adatos['disponibles'];
                 $imagen = $adatos['imagen'];
 
                 // Validación de imagen
@@ -140,15 +141,17 @@ function listarPorCategoria() {
                 $ccontenido .= '<h4>' . htmlspecialchars($cnombre_categoria) . ' - ' . htmlspecialchars($codigo) . '</h4>';
                 $ccontenido .= '<div class="card-precio">$' . $precio . '</div>';
                 $ccontenido .= '<small>Capacidad: ' . htmlspecialchars($capacidad) . ' personas</small>';
-                // Descripción oculta
+                $ccontenido .= '<br><small>Disponibles: ' . htmlspecialchars($disponibles) . ' cuartos</small>';
+                /* Descripción oculta
                 $ccontenido .= '<div class="card-desc" id="desc-' . $id . '">';
                 $ccontenido .= '<p>' . htmlspecialchars($descripcion) . '</p>';
                 $ccontenido .= '</div>';
                 $ccontenido .= '</div>';
+                */
                 // Botones
                 $ccontenido .= '<div class="card-actions">';
                 // Botón Ver Detalles
-                $ccontenido .= '<button type="button" class="btn-detalles" onclick="abrirModalDetalles(' . $id . ', \'' . htmlspecialchars($codigo) . '\', \'' . htmlspecialchars($cnombre_categoria) . '\', ' . $adatos['precio'] . ', ' . $capacidad . ', \'' . $descripcion . '\', \'' . htmlspecialchars($ruta_imagen) . '\')">';
+                $ccontenido .= '<button type="button" class="btn-detalles" onclick="abrirModalDetalles(' . $id . ', \'' . htmlspecialchars($codigo) . '\', \'' . htmlspecialchars($cnombre_categoria) . '\', ' . $adatos['precio'] . ', ' . $capacidad . ', ' . $disponibles . ', \'' . $descripcion . '\', \'' . htmlspecialchars($ruta_imagen) . '\')">';
                 $ccontenido .= 'Ver Detalles';
                 $ccontenido .= '</button>';
                 // Botón Agregar al Carrito

@@ -1,7 +1,7 @@
 // Modal de Detalles de Habitación
 
 const Modal = {
-    abrirDetalles: function(id, codigo, categoria, precio, capacidad, descripcion, imagen) {
+    abrirDetalles: function(id, codigo, categoria, precio, capacidad, disponibles, descripcion, imagen) {
         // Crear contenido HTML del modal
         const contenidoHTML = `
             <!DOCTYPE html>
@@ -32,9 +32,14 @@ const Modal = {
                         <label>Capacidad:</label>
                         <p>${capacidad} persona(s)</p>
                     </div>
+
+                    <div class="modal-info">
+                        <label>Disponibles:</label>
+                        <p>${disponibles} cuartos disponibles</p)
+                    </div>
                     
                     <div class="modal-precio">
-                        $${parseFloat(precio).toFixed(2)} por noche
+                        <p>$${parseFloat(precio).toFixed(2)} por noche</p>
                     </div>
                     
                     <div class="modal-info">
@@ -58,6 +63,6 @@ const Modal = {
 };
 
 // Función global para facilitar acceso desde HTML
-function abrirModalDetalles(id, codigo, categoria, precio, capacidad, descripcion, imagen) {
-    Modal.abrirDetalles(id, codigo, categoria, precio, capacidad, descripcion, imagen);
+function abrirModalDetalles(id, codigo, categoria, precio, capacidad, disponibles, descripcion, imagen) {
+    Modal.abrirDetalles(id, codigo, categoria, precio, capacidad, disponibles, descripcion, imagen);
 }
