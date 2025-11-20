@@ -13,6 +13,7 @@ validarAdmin();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de habitaciones</title>
     <link rel="stylesheet" href="../estilos/generales.css">
+    <link rel="icon" href="../imagenes/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>

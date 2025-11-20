@@ -17,6 +17,7 @@ if (isset($_GET['termino']) || isset($_POST['txt_termino'])) {
     <meta charset="UTF-8">
     <title>Resultados de búsqueda</title>
     <link rel="stylesheet" href="estilos/generales.css">
+    <link rel="icon" href="imagenes/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>

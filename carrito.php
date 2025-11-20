@@ -6,7 +6,8 @@ include_once("config.inc.php");
 <head>
     <meta charset="UTF-8">
     <title>Mi Carrito de Reservas</title>
-    <link rel="stylesheet" href="css/estilos.css">
+    <link rel="stylesheet" href="estilos/generales.css">
+    <link rel="icon" href="imagenes/favicon.ico" type="image/x-icon">
     <style>
         /* Estilos temporales para la tabla del carrito */
         .contenedor-carrito { width: 80%; margin: 20px auto; }

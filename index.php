@@ -1,7 +1,7 @@
 <?php
 include_once("config.inc.php");
 include_once("funciones/sesiones.php");
-include_once("funciones/listar_index.php");
+include_once("funciones/listar.php");
 //No se valida sesión en index.php ya que es una de las páginas accesibles sin iniciar sesión
 session_start();
 $sesion_activa = isset($_SESSION['cidusuario']);
@@ -15,6 +15,8 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio -- Hotel Urbano</title>
     <link rel="stylesheet" href="estilos/index.css">
+    <link rel="stylesheet" href="estilos/generales.css">
+    <link rel="icon" href="imagenes/favicon.ico" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -56,20 +58,12 @@ $nombre_usuario = $_SESSION['cnombre_usuario'] ?? 'Visitante';
             </form>
         </div>
 
-        <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+        <hr>
 
         <h3>Nuestras Habitaciones</h3>
         
-        <div class="carrusel-wrapper">
-            <button class="carrusel-btn btn-prev" id="prevBtn">&#10094;</button>
-            
-            <div class="carrusel-track-container">
-                <div class="carrusel-track" id="track">
-                    <?php echo listarHabitacionesCards(); ?>
-                </div>
-            </div>
-            
-            <button class="carrusel-btn btn-next" id="nextBtn">&#10095;</button>
+        <div id="habitaciones-container">
+            <?php echo listarPorCategoria(); ?>
         </div>
 
     </main>

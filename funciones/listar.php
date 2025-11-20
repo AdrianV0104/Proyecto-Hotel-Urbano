@@ -67,13 +67,12 @@ include_once("acceso_bd.php");
 */
 //Listado de habitaciones por categoría
 function listarPorCategoria() {
-
     $ccontenido = "";
 
     $pconexion = abrirConexion();
     seleccionarBaseDatos($pconexion);
 
-    //Primero obtener todas las categorías con un orden específico
+    // Obtener todas las categorías con orden específico
     $cquery_categoria = "SELECT DISTINCT categoria FROM habitaciones ORDER BY CASE categoria ";
     $cquery_categoria .= "WHEN 'Sencilla' THEN 1 ";
     $cquery_categoria .= "WHEN 'Doble' THEN 2 ";
@@ -89,15 +88,11 @@ function listarPorCategoria() {
         die($cerror);
     }
 
-    //Para cada categoría, obtener las habitaciones correspondientes
+    // Nos vamos imprimiendo habitaciones categoría por categoría
     while ($ccategoria = mysqli_fetch_array($cresultado_categorias, MYSQLI_ASSOC)) {
         $cnombre_categoria = mysqli_real_escape_string($pconexion, $ccategoria['categoria']);
 
-        //Header de la categoria
-        $ccontenido .= "<tr class='header-categoria'>";
-        $ccontenido .= "<td colspan='15'><h3>".$cnombre_categoria."s</h3></td></tr>";
-
-        //Obtener las habitaciones pertenecientes a la categoría
+        // Obtener las habitaciones pertenecientes a la categoría
         $cquery = "SELECT id_habitacion, codigo, precio, capacidad, disponibles, descripcion, imagen";
         $cquery .= " FROM habitaciones WHERE activo = 1 AND categoria = '$cnombre_categoria'";
 
@@ -108,41 +103,72 @@ function listarPorCategoria() {
             die($cerror);
         }
 
-        //Listar habitaciones de la categoria
+        // Listar habitaciones de la categoría
         if(mysqli_num_rows($lresultado) > 0) {
+            // Contenedor de categoría
+            $ccontenido .= '<section class="categoria-section">';
+            $ccontenido .= '    <h3 class="categoria-titulo">' . htmlspecialchars($cnombre_categoria) . 's</h3>';
+            $ccontenido .= '    <div class="carrusel-wrapper">';
+            $ccontenido .= '        <button class="carrusel-btn btn-prev">&#10094;</button>';
+            $ccontenido .= '        <div class="carrusel-track-container">';
+            $ccontenido .= '            <div class="carrusel-track">';
+
+            // Renderizar tarjetas
             while ($adatos = mysqli_fetch_array($lresultado, MYSQLI_ASSOC)) {
-                //$cid_habitacion = $adatos['id_habitacion'];
+                $id = $adatos['id_habitacion'];
+                $codigo = $adatos['codigo'];
+                $precio = number_format($adatos['precio'], 2);
+                $capacidad = $adatos['capacidad'];
+                $descripcion = $adatos['descripcion'];
+                $imagen = $adatos['imagen'];
 
-                $ccontenido .= "<tr>";
-                $ccontenido .= "<td align='center'>".$adatos['codigo']."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td>".$cnombre_categoria."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td>\$".number_format($adatos['precio'], 2)."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td align='center'>".$adatos['capacidad']."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td align='center'>".$adatos['disponibles']."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td><img src='imagenes/habitaciones/".$adatos["imagen"]."' alt=\"Imagen de la habitación\" width=\"100\"></td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td>".$adatos['descripcion']."</td>";
-                $ccontenido .= "<td width='10'>&nbsp;</td>";
-                $ccontenido .= "<td><button type='button' class='btn-reservar' ";
-                $ccontenido .= "onclick=\"Carrito.agregar(".$adatos['id_habitacion'].", '".$adatos['codigo']."', ".$adatos['precio'].", '".$cnombre_categoria."')\">";
-                $ccontenido .= "Agregar al Carrito";
-                $ccontenido .= "</button></td>";
-                $ccontenido .= "</tr>";
+                // Validación de imagen
+                $ruta_imagen = "imagenes/habitaciones/" . $imagen;
+                if (empty($imagen)) {
+                    $ruta_imagen = "imagenes/habitaciones/sin_imagen.jpg";
+                }
+
+                // RENDERIZADO DE LA TARJETAxdxd
+                $ccontenido .= '<div class="habitacion-card">';
+                // Imagen
+                $ccontenido .= '<div class="card-imagen">';
+                $ccontenido .= '<img src="' . htmlspecialchars($ruta_imagen) . '" alt="Habitación ' . htmlspecialchars($codigo) . '" onerror="this.src=\'imagenes/habitaciones/sin_imagen.jpg\'">';
+                $ccontenido .= '</div>';
+                // Información
+                $ccontenido .= '<div class="card-info">';
+                $ccontenido .= '<div>';
+                $ccontenido .= '<h4>' . htmlspecialchars($cnombre_categoria) . ' - ' . htmlspecialchars($codigo) . '</h4>';
+                $ccontenido .= '<div class="card-precio">$' . $precio . '</div>';
+                $ccontenido .= '<small>Capacidad: ' . htmlspecialchars($capacidad) . ' personas</small>';
+                // Descripción oculta
+                $ccontenido .= '<div class="card-desc" id="desc-' . $id . '">';
+                $ccontenido .= '<p>' . htmlspecialchars($descripcion) . '</p>';
+                $ccontenido .= '</div>';
+                $ccontenido .= '</div>';
+                // Botones
+                $ccontenido .= '<div class="card-actions">';
+                // Botón Ver Detalles
+                $ccontenido .= '<button type="button" class="btn-detalles" onclick="toggleDetalles(' . $id . ')">';
+                $ccontenido .= 'Ver Detalles';
+                $ccontenido .= '</button>';
+                // Botón Agregar al Carrito
+                $ccontenido .= '<button type="button" class="btn-carrito" ';
+                $ccontenido .= 'onclick="Carrito.agregar(' . $id . ', \'' . htmlspecialchars($codigo) . '\', ' . $adatos['precio'] . ', \'' . htmlspecialchars($cnombre_categoria) . '\')">';
+                $ccontenido .= 'Agregar';
+                $ccontenido .= '</button>';
+                $ccontenido .= '</div>';
+                $ccontenido .= '</div>';
+                $ccontenido .= '</div>';
             }
-        }
-        else {
-            $ccontenido .= "<tr><td colspan='15' align='center'>No hay habitaciones disponibles en esta categoría.</td></tr>";
-        }
 
-        mysqli_free_result($lresultado);
+            $ccontenido .= '</div>';
+            $ccontenido .= '</div>';
+            $ccontenido .= '<button class="carrusel-btn btn-next">&#10095;</button>';
+            $ccontenido .= '</div>';
+            $ccontenido .= '</section>';
 
-        //Espacio entre categorias
-        $ccontenido .= "<tr><td colspan='15'>&nbsp;</td></tr>";
+            mysqli_free_result($lresultado);
+        }
     }
 
     mysqli_free_result($cresultado_categorias);

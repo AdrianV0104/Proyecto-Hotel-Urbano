@@ -13,6 +13,7 @@ if (isset($_SESSION["cidusuario"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilos/generales.css">
+    <link rel="icon" href="imagenes/favicon.ico" type="image/x-icon">
     <title>Iniciar Sesión</title>
 </head>
 <body>
