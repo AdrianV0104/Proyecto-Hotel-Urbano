@@ -2,6 +2,11 @@
 
 const Modal = {
     abrirDetalles: function(id, codigo, categoria, precio, capacidad, disponibles, descripcion, imagen) {
+        // Rutas absolutas para usar en ventanas emergentes
+        const cssHref = window.location.origin + '/urbano/estilos/generales.css';
+        const cssHref2 = window.location.origin + '/urbano/estilos/modal.css';
+        const defaultImg = window.location.origin + '/urbano/imagenes/habitaciones/sin_imagen.jpg';
+
         // Crear contenido HTML del modal
         const contenidoHTML = `
             <!DOCTYPE html>
@@ -9,7 +14,8 @@ const Modal = {
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="icon" href="imagenes/favicon.ico" type="image/x-icon">
+                <link rel="stylesheet" href="${cssHref}">
+                <link rel="stylesheet" href="${cssHref2}">
                 <title>Detalles de Habitación</title>
             </head>
             <body>
@@ -20,7 +26,7 @@ const Modal = {
                     </div>
                     
                     <div class="modal-imagen">
-                        <img src="${imagen}" alt="Habitación ${codigo}" onerror="this.src='imagenes/habitaciones/sin_imagen.jpg'">
+                        <img src="${imagen}" alt="Habitación ${codigo}" onerror="this.src='${defaultImg}'">
                     </div>
                     
                     <div class="modal-info">
@@ -35,7 +41,7 @@ const Modal = {
 
                     <div class="modal-info">
                         <label>Disponibles:</label>
-                        <p>${disponibles} cuartos disponibles</p)
+                        <p>${disponibles} cuartos disponibles</p>
                     </div>
                     
                     <div class="modal-precio">

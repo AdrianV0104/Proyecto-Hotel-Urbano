@@ -40,7 +40,10 @@ $tipo_usuario = $_SESSION['ctipo_usuario'] ?? 'visitante';
         <?php endif; ?>
     </nav>
     <main class="contenedor-carrito">
-        <h2><i class="fa fa-clipboard-check"></i> Finalizar Reservaci&oacute;n</h2>
+        <div class="carrito-header">
+            <h2><i class="fa fa-clipboard-check"></i> Finalizar Reservaci&oacute;n</h2>
+            <a href="index.php" class="btn-accion btn-volver"><i class="fa fa-arrow-left"></i> Volver al listado</a>
+        </div>
         <div class="tabla-responsive">
             <table class="carrito">
                 <thead>
@@ -100,7 +103,6 @@ $tipo_usuario = $_SESSION['ctipo_usuario'] ?? 'visitante';
                     Para confirmar tu reserva, por favor <a href="login.php">Inicia Sesi&oacute;n</a>.
                 </div>
             <?php endif; ?>
-            <input type="button" name="btn_cancelar" value="Cancelar" onclick="window.location.href='index.php';">
         </form>
     </main>
 </body>
